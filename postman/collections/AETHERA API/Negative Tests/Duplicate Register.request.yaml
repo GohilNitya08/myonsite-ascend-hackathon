@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{base_url}}/auth/register"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "username": "testuser",
+      "full_name": "Test User",
+      "email": "testuser@example.com",
+      "password": "TestPassword123!"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 409 or 422", function () {
+          pm.expect(pm.response.code).to.be.oneOf([409, 422]);
+      });
+      pm.test("Response time is less than 1000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(1000);
+      });
+      pm.test("Response is valid JSON", function () {
+          pm.response.to.be.json;
+      });
+    language: text/javascript
+order: 5000

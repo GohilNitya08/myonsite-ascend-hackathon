@@ -1,0 +1,40 @@
+$kind: http-request
+url: "{{base_url}}/workspaces"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{access_token}}
+body:
+  type: json
+  content: |-
+    {
+      "workspace_name": "My Workspace",
+      "workspace_type": "PERSONAL",
+      "description": "A personal workspace for testing",
+      "visibility": "PRIVATE",
+      "storage_limit": 10737418240,
+      "color": "#4A90E2"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test("Response time is less than 1000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(1000);
+      });
+      pm.test("Response is valid JSON", function () {
+          pm.response.to.be.json;
+      });
+      pm.test("Response has workspace_id", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData).to.have.property('workspace_id');
+          pm.environment.set("workspace_id", jsonData.workspace_id);
+      });
+      pm.test("Response has workspace_name", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData).to.have.property('workspace_name');
+      });
+    language: text/javascript
+order: 1000

@@ -1,0 +1,1 @@
+"""AETHERA backend application package."""

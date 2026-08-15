@@ -1,0 +1,36 @@
+$kind: http-request
+url: "{{base_url}}/auth/login"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": "testuser@example.com",
+      "password": "TestPassword123!"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200", function () {
+          pm.response.to.have.status(200);
+      });
+      pm.test("Response time is less than 1000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(1000);
+      });
+      pm.test("Response is valid JSON", function () {
+          pm.response.to.be.json;
+      });
+      pm.test("Response has access_token", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData).to.have.property('access_token');
+          pm.environment.set("access_token", jsonData.access_token);
+      });
+      pm.test("Response has refresh_token", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData).to.have.property('refresh_token');
+          pm.environment.set("refresh_token", jsonData.refresh_token);
+      });
+    language: text/javascript
+order: 2000

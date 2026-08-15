@@ -1,0 +1,13 @@
+# Use this workspace to collaborate
+workspace:
+  id: 79e18c25-39b4-410a-8260-8f981f1a2959
+
+cloudResources:
+  collections:
+    ../postman/collections/AETHERA API: 93143600-46cc-4640-87cf-183f36057e11
+
+# All resources in the `postman/` folder are automatically registered in Local View.
+# Point to additional files outside the `postman/` folder to register them individually. Example:
+#localResources:
+#  collections:
+#    - ../tests/E2E Test Collection/

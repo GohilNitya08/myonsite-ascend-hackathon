@@ -1,0 +1,39 @@
+$kind: http-request
+url: "{{base_url}}/files"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{access_token}}
+body:
+  type: json
+  content: |-
+    {
+      "folder_id": "{{folder_id}}",
+      "file_name": "test-document",
+      "original_file_name": "test-document.pdf",
+      "extension": "pdf",
+      "mime_type": "application/pdf",
+      "file_size": 102400,
+      "storage_path": "workspaces/{{workspace_id}}/files/test-document.pdf",
+      "file_hash": "abc123def456",
+      "ai_enabled": false
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test("Response time is less than 1000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(1000);
+      });
+      pm.test("Response is valid JSON", function () {
+          pm.response.to.be.json;
+      });
+      pm.test("Response has file_id", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData).to.have.property('file_id');
+          pm.environment.set("file_id", jsonData.file_id);
+      });
+    language: text/javascript
+order: 1000

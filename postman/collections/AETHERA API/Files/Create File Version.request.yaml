@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{base_url}}/files/{{file_id}}/versions"
+method: POST
+headers:
+  Content-Type: application/json
+  Authorization: Bearer {{access_token}}
+body:
+  type: json
+  content: |-
+    {
+      "storage_path": "workspaces/{{workspace_id}}/files/test-document-v2.pdf",
+      "file_size": 204800,
+      "file_hash": "xyz789abc123",
+      "version_note": "Updated content in section 2"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+      pm.test("Response time is less than 1000ms", function () {
+          pm.expect(pm.response.responseTime).to.be.below(1000);
+      });
+      pm.test("Response is valid JSON", function () {
+          pm.response.to.be.json;
+      });
+    language: text/javascript
+order: 8000
